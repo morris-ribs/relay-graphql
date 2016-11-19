@@ -36,6 +36,7 @@ Finally, paste the contents of https://github.com/morris-ribs/rest-go/blob/maste
 
 In the root folder of the project, run
 ```
+$ npm install
 $ npm start
 ```
 
