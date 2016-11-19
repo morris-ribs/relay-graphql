@@ -1,10 +1,10 @@
 # relay-graphql
 
-This project is baed on https://github.com/relayjs/relay-starter-kit
+This project is based on https://github.com/relayjs/relay-starter-kit
 
 This is a GraphQL server, coded in NodeJs, that makes queries to retrieves data from a MongoDB instance.
 
-The client queries the data via Relay.
+The client queries the data via Relay: https://facebook.github.io/relay/
 
 # 1) Launch mongo daemon!
 
@@ -42,3 +42,7 @@ $ npm start
 It is going to start the server on the port 8080; and the client on port 3000
 
 Open http://localhost:3000/
+
+# Next steps (TODO)
+
+Use Relay to call the mutations to manage data.
