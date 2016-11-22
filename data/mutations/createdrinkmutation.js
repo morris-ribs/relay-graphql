@@ -1,30 +1,36 @@
 import { GraphQLObjectType, GraphQLInputObjectType, GraphQLString, GraphQLNonNull, GraphQLFloat, GraphQLInt } from 'graphql';
 import DrinkType from '../types/drinktype';
+import StoreType from '../types/storetype';
 import Drink from '../../databasemodel/Drink';
 
-let CreateDrinkType = new GraphQLInputObjectType({
-  name: 'CreateDrink',
-  fields: () => ({ // description of the fields { name_of_the_field: type_of_the_field }
-          name: { type: new GraphQLNonNull(GraphQLString) },
-          type1: { type: new GraphQLNonNull(GraphQLString) },
-          type2: { type: new GraphQLNonNull(GraphQLString) },
-          price: { type: GraphQLFloat, defaultValue: 0 },
-          stock: { type: GraphQLInt, defaultValue: 0 }
-      })
-});
+import {mutationWithClientMutationId} from 'graphql-relay';
+import DrinkConnection from '../connections/DrinkConnection';
 
-export default {
-    type: DrinkType,
-    args:{              
-      input: { 
-        type: new GraphQLNonNull(CreateDrinkType) }
+let storeObj = {};
+
+/* eslint-disable no-alert, no-console */
+let CreateDrinkMutation = mutationWithClientMutationId({
+  name: "CreateDrink",
+  inputFields:{
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    type1: { type: new GraphQLNonNull(GraphQLString) },
+    type2: { type: new GraphQLNonNull(GraphQLString) },
+    price: { type: GraphQLFloat, defaultValue: 0 },
+    stock: { type: GraphQLInt, defaultValue: 0 }
+  },
+  outputFields: {
+    drinkEdge: {
+      type: DrinkConnection.edgeType,
+      resolve: (obj) => ({node: obj, cursor: obj.id })
     },
-    resolve: (obj, {input}) => {
-      
-      // insertion
-      return Drink.create
-      (
-        { name: input.name, type1: input.type1, type2: input.type2, price: input.price, stock: input.stock }, 
+    store: {
+      type: StoreType,
+      resolve: () => storeObj
+    }
+  },
+  mutateAndGetPayload:({name, type1, type2, price, stock}) => {
+    return Drink.create (
+        { name: name, type1: type1, type2: type2, price: price, stock: stock }, 
           function (err, drink) {
             if (err)
                 console.log("Error creating drink: " + err);
@@ -34,5 +40,7 @@ export default {
             return drink;
           }
       );
-    }
-  };
+  }
+});
+
+export default CreateDrinkMutation;

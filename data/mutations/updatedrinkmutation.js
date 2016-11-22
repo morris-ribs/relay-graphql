@@ -21,7 +21,7 @@ export default {
         type: new GraphQLNonNull(UpdateDrinkType) }
     },
     resolve: (obj, {input}) => {      
-      var query = {"_id": input._id};
+      let query = {"_id": input._id};
 
       // updating...
       Drink.update

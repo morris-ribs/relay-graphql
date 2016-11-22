@@ -3,7 +3,7 @@ import QueryType from './types/QueryType';
 import MutationType from './types/MutationType';
 
 
-export var Schema = new GraphQLSchema({
+export let Schema = new GraphQLSchema({
     query: QueryType,
     mutation: MutationType
 });
