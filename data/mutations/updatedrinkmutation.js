@@ -1,38 +1,37 @@
-import { GraphQLObjectType, GraphQLInputObjectType, GraphQLString, GraphQLNonNull, GraphQLFloat, GraphQLInt, GraphQLBoolean } from 'graphql';
+import { GraphQLObjectType, GraphQLInputObjectType, GraphQLString, GraphQLNonNull, GraphQLBoolean } from 'graphql';
 import DrinkType from '../types/drinktype';
 import Drink from '../../databasemodel/Drink';
+import StoreType from '../types/storetype';
+import DrinkConnection from '../connections/DrinkConnection';
+import mongoose from 'mongoose';
 
-let UpdateDrinkType = new GraphQLInputObjectType({
-  name: 'UpdateDrink',
-  fields: () => ({ // description of the fields { name_of_the_field: type_of_the_field }
-          _id:  { type: new GraphQLNonNull(GraphQLString) },
-          name: { type: GraphQLString },
-          type1: { type: GraphQLString },
-          type2: { type: GraphQLString },
-          price: { type: GraphQLFloat, defaultValue: 0 },
-          stock: { type: GraphQLInt, defaultValue: 0 }
-      })
+
+import {mutationWithClientMutationId} from 'graphql-relay';
+
+let storeObj = {};
+
+/* eslint-disable no-alert, no-console */
+let UpdateDrinkMutation = mutationWithClientMutationId({
+  name: "UpdateDrink",
+  inputFields:{
+    id: { type: new GraphQLNonNull(GraphQLString) }
+  },
+  outputFields: {
+    drinkEdge: {
+      type: DrinkConnection.edgeType,
+      resolve: (obj) => ({node: obj, cursor: obj.id })
+    },
+    store: {
+      type: StoreType,
+      resolve: () => storeObj
+    }
+  },
+  mutateAndGetPayload:({id, name, type1, type2, price, stock}) => {
+      let promise = Drink.findByIdAndUpdate(mongoose.Types.ObjectId(id), { name: name, type1: type1, type2: type2, price: price, stock: stock });
+      return promise.then(function(doc) {
+          return doc;
+      });
+  }
 });
 
-export default {
-    type: GraphQLString,
-    args:{              
-      input: { 
-        type: new GraphQLNonNull(UpdateDrinkType) }
-    },
-    resolve: (obj, {input}) => {      
-      let query = {"_id": input._id};
-
-      // updating...
-      Drink.update
-      ( query, // to search for the current data
-        { name: input.name, type1: input.type1, type2: input.type2, price: input.price, stock: input.stock }, // the updates to be done
-          function (err) { // callback            
-            if (err)
-              throw err;
-          }
-      );
-
-      return "Successfully updated!";
-    }
-  };
+export default UpdateDrinkMutation;
