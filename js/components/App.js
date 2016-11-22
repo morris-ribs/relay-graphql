@@ -3,6 +3,7 @@ import Relay from 'react-relay';
 import Drink from './Drink';
 import CreateDrinkRelayMutation from '../mutations/CreateDrinkRelayMutation';
 
+// the application
 class App extends React.Component {
   setLimit = (e) => {
     let newLimit = Number(e.target.value);
@@ -46,10 +47,10 @@ class App extends React.Component {
           <input type="text" placeholder="Stock" ref="newStock" />
           <button type="Submit">Add</button>
         </form>
-        <select onChange={this.setLimit} defaultValue="11">
+        <select onChange={this.setLimit} defaultValue="10">
           <option value="5">5</option>
-          <option value="12">10</option>
-          <option value="50">50</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
         </select>
         <ul>
           {content}
@@ -61,7 +62,7 @@ class App extends React.Component {
 
 export default Relay.createContainer(App, {
   initialVariables: {
-    limit:12
+    limit:10
   }, 
   fragments: {
     store: () => Relay.QL`

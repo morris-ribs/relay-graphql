@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 
-var drinkModel = new mongoose.Schema({
+let drinkModel = new mongoose.Schema({
     name: {
         type: String
     },
@@ -19,4 +19,5 @@ var drinkModel = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Drink', drinkModel);
+let Drink = mongoose.model('Drink', drinkModel);
+export default Drink;

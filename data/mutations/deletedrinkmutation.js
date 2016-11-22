@@ -13,10 +13,10 @@ let storeObj = {};
 /* eslint-disable no-alert, no-console */
 let DeleteDrinkMutation = mutationWithClientMutationId({
   name: "DeleteDrink",
-  inputFields:{
+  inputFields:{ // here is what the server is going to receive from the client
     id: { type: new GraphQLNonNull(GraphQLString) }
   },
-  outputFields: {
+  outputFields: { // here is what the server is going to send to the client
     drinkEdge: {
       type: DrinkConnection.edgeType,
       resolve: (obj) => ({node: obj, cursor: obj.id })
@@ -27,6 +27,7 @@ let DeleteDrinkMutation = mutationWithClientMutationId({
     }
   },
   mutateAndGetPayload:({id}) => {
+      // we use a promise to retrieve the deleted document
       let promise = Drink.findByIdAndRemove(mongoose.Types.ObjectId(id));
       return promise.then(function(doc) {
           return doc;
